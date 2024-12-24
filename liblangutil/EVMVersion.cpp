@@ -19,8 +19,9 @@
  * EVM versioning.
  */
 
-#include <liblangutil/EVMVersion.h>
 #include <libevmasm/Instruction.h>
+#include <liblangutil/EVMVersion.h>
+
 
 using namespace solidity;
 using namespace solidity::evmasm;
@@ -29,7 +30,7 @@ using namespace solidity::langutil;
 bool EVMVersion::hasOpcode(Instruction _opcode, std::optional<uint8_t> _eofVersion) const
 {
 	// EOF version can be only defined since prague
-	assert(!_eofVersion.has_value() || this->m_version >= prague());
+	assert(!_eofVersion.has_value() || static_cast<int>(m_version) >= static_cast<int>(prague().m_version));
 
 	switch (_opcode)
 	{
