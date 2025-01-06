@@ -45,8 +45,7 @@
                                 "liveness": {
                                     "in": [],
                                     "out": [
-                                        "v0",
-                                        "v2"
+                                        "v0"
                                     ]
                                 },
                                 "type": "BuiltinCall"
@@ -189,8 +188,7 @@
                                     "liveness": {
                                         "in": [],
                                         "out": [
-                                            "v0",
-                                            "v5"
+                                            "v0"
                                         ]
                                     },
                                     "type": "BuiltinCall"
@@ -262,8 +260,7 @@
                                             "v0"
                                         ],
                                         "out": [
-                                            "v0",
-                                            "v11"
+                                            "v0"
                                         ]
                                     },
                                     "type": "BuiltinCall"
@@ -306,8 +303,7 @@
                                             "v0"
                                         ],
                                         "out": [
-                                            "v0",
-                                            "v12"
+                                            "v0"
                                         ]
                                     },
                                     "type": "BuiltinCall"
@@ -365,8 +361,7 @@
                                             "v0"
                                         ],
                                         "out": [
-                                            "v0",
-                                            "v17"
+                                            "v0"
                                         ]
                                     },
                                     "type": "BuiltinCall"
@@ -497,8 +492,7 @@
                                 "liveness": {
                                     "in": [],
                                     "out": [
-                                        "v0",
-                                        "v2"
+                                        "v0"
                                     ]
                                 },
                                 "type": "BuiltinCall"
@@ -641,8 +635,7 @@
                                     "liveness": {
                                         "in": [],
                                         "out": [
-                                            "v0",
-                                            "v5"
+                                            "v0"
                                         ]
                                     },
                                     "type": "BuiltinCall"
@@ -714,8 +707,7 @@
                                             "v0"
                                         ],
                                         "out": [
-                                            "v0",
-                                            "v11"
+                                            "v0"
                                         ]
                                     },
                                     "type": "BuiltinCall"
@@ -758,8 +750,7 @@
                                             "v0"
                                         ],
                                         "out": [
-                                            "v0",
-                                            "v12"
+                                            "v0"
                                         ]
                                     },
                                     "type": "BuiltinCall"
@@ -817,8 +808,7 @@
                                             "v0"
                                         ],
                                         "out": [
-                                            "v0",
-                                            "v17"
+                                            "v0"
                                         ]
                                     },
                                     "type": "BuiltinCall"
@@ -913,8 +903,7 @@
                                         "out": [
                                             "v0",
                                             "v18",
-                                            "v24",
-                                            "v28"
+                                            "v24"
                                         ]
                                     },
                                     "type": "BuiltinCall"
@@ -1008,8 +997,7 @@
                                             "v24"
                                         ],
                                         "out": [
-                                            "v41",
-                                            "v42"
+                                            "v41"
                                         ]
                                     },
                                     "type": "BuiltinCall"
@@ -1166,8 +1154,7 @@
                                         ],
                                         "out": [
                                             "v46",
-                                            "v59",
-                                            "v60"
+                                            "v59"
                                         ]
                                     },
                                     "type": "BuiltinCall"
@@ -1242,8 +1229,7 @@
                                             "v59"
                                         ],
                                         "out": [
-                                            "v46",
-                                            "v59"
+                                            "v46"
                                         ]
                                     }
                                 },
@@ -1388,8 +1374,7 @@
                                             "v46"
                                         ],
                                         "out": [
-                                            "v46",
-                                            "v67"
+                                            "v46"
                                         ]
                                     },
                                     "type": "BuiltinCall"
@@ -1497,8 +1482,7 @@
                                         "out": [
                                             "v46",
                                             "v71",
-                                            "v77",
-                                            "v80"
+                                            "v77"
                                         ]
                                     },
                                     "type": "BuiltinCall"
@@ -1588,8 +1572,7 @@
                                             "v77"
                                         ],
                                         "out": [
-                                            "v46",
-                                            "v90"
+                                            "v46"
                                         ]
                                     },
                                     "type": "BuiltinCall"
@@ -1737,8 +1720,7 @@
                                         "liveness": {
                                             "in": [],
                                             "out": [
-                                                "v0",
-                                                "v2"
+                                                "v0"
                                             ]
                                         },
                                         "type": "BuiltinCall"
@@ -1881,8 +1863,7 @@
                                             "liveness": {
                                                 "in": [],
                                                 "out": [
-                                                    "v0",
-                                                    "v5"
+                                                    "v0"
                                                 ]
                                             },
                                             "type": "BuiltinCall"
@@ -1954,8 +1935,7 @@
                                                     "v0"
                                                 ],
                                                 "out": [
-                                                    "v0",
-                                                    "v11"
+                                                    "v0"
                                                 ]
                                             },
                                             "type": "BuiltinCall"
@@ -1998,8 +1978,7 @@
                                                     "v0"
                                                 ],
                                                 "out": [
-                                                    "v0",
-                                                    "v12"
+                                                    "v0"
                                                 ]
                                             },
                                             "type": "BuiltinCall"
@@ -2057,8 +2036,7 @@
                                                     "v0"
                                                 ],
                                                 "out": [
-                                                    "v0",
-                                                    "v17"
+                                                    "v0"
                                                 ]
                                             },
                                             "type": "BuiltinCall"
