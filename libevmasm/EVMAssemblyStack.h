@@ -50,25 +50,25 @@ public:
 
 	std::string const& name() const { return m_name; }
 
-	virtual LinkerObject const& object(std::string const& _contractName) const override;
-	virtual LinkerObject const& runtimeObject(std::string const& _contractName) const override;
+	LinkerObject const& object(std::string const& _contractName) const override;
+	LinkerObject const& runtimeObject(std::string const& _contractName) const override;
 
 	std::shared_ptr<evmasm::Assembly> const& evmAssembly() const { return m_evmAssembly; }
 	std::shared_ptr<evmasm::Assembly> const& evmRuntimeAssembly() const { return m_evmRuntimeAssembly; }
 
-	virtual std::string const* sourceMapping(std::string const& _contractName) const override;
-	virtual std::string const* runtimeSourceMapping(std::string const& _contractName) const override;
+	std::string const* sourceMapping(std::string const& _contractName) const override;
+	std::string const* runtimeSourceMapping(std::string const& _contractName) const override;
 
-	virtual Json assemblyJSON(std::string const& _contractName) const override;
-	virtual std::string assemblyString(std::string const& _contractName, StringMap const& _sourceCodes) const override;
+	Json assemblyJSON(std::string const& _contractName) const override;
+	std::string assemblyString(std::string const& _contractName, StringMap const& _sourceCodes) const override;
 
-	virtual std::string const filesystemFriendlyName(std::string const& _contractName) const override;
+	std::string const filesystemFriendlyName(std::string const& _contractName) const override;
 
-	virtual std::vector<std::string> contractNames() const override { return {m_name}; }
-	virtual std::vector<std::string> sourceNames() const override;
+	std::vector<std::string> contractNames() const override { return {m_name}; }
+	std::vector<std::string> sourceNames() const override;
 	std::map<std::string, unsigned> sourceIndices() const;
 
-	virtual bool compilationSuccessful() const override { return m_evmAssembly != nullptr; }
+	bool compilationSuccessful() const override { return m_evmAssembly != nullptr; }
 
 	void selectDebugInfo(langutil::DebugInfoSelection _debugInfoSelection)
 	{
