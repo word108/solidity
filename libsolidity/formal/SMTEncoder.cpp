@@ -428,9 +428,11 @@ void SMTEncoder::endVisit(TupleExpression const& _tuple)
 	{
 		// Add constraints for the length and values as it is known.
 		auto symbArray = std::dynamic_pointer_cast<smt::SymbolicArrayVariable>(m_context.expression(_tuple));
-		solAssert(symbArray, "");
-
-		addArrayLiteralAssertions(*symbArray, applyMap(_tuple.components(), [&](auto const& c) { return expr(*c); }));
+		smtAssert(symbArray, "Inline array must be represented with SymbolicArrayVariable");
+		auto originalType = symbArray->originalType();
+		auto arrayType = dynamic_cast<ArrayType const*>(originalType);
+		smtAssert(arrayType, "Type of inline array must be ArrayType");
+		addArrayLiteralAssertions(*symbArray, applyMap(_tuple.components(), [&](auto const& c) { return expr(*c, arrayType->baseType()); }));
 	}
 	else
 	{
