@@ -409,7 +409,7 @@ Json YulStack::cfgJson() const
 				subObjectsJson[subObject->name] = exportCFGFromObject(*subObject);
 				subObjectsJson["type"] = "subObject";
 				if (!subObject->subObjects.empty())
-					subObjectsJson["subObjects"] = exportCFGFromSubObjects(subObject->subObjects);
+					subObjectsJson[subObject->name]["subObjects"] = exportCFGFromSubObjects(subObject->subObjects);
 			}
 		return subObjectsJson;
 	};
@@ -418,7 +418,8 @@ Json YulStack::cfgJson() const
 	Json jsonObject = Json::object();
 	jsonObject[object.name] = exportCFGFromObject(object);
 	jsonObject["type"] = "Object";
-	jsonObject["subObjects"] = exportCFGFromSubObjects(object.subObjects);
+	if (!object.subObjects.empty())
+		jsonObject[object.name]["subObjects"] = exportCFGFromSubObjects(object.subObjects);
 	return jsonObject;
 }
 
