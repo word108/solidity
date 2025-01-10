@@ -11,6 +11,7 @@ Compiler Features:
 Bugfixes:
  * General: Fix internal compiler error when requesting IR AST outputs for interfaces and abstract contracts.
  * SMTChecker: Fix SMT logic error when initializing a fixed-sized-bytes array using string literals.
+ * SMTChecker: Fix SMT logic error when translating invariants involving array store and select operations.
  * Standard JSON Interface: Fix ``generatedSources`` and ``sourceMap`` being generated internally even when not requested.
  * Yul: Fix internal compiler error when a code generation error should be reported instead.
 
