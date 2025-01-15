@@ -258,6 +258,8 @@ hiding new and different behavior in existing code.
 Internals
 =========
 
+.. _internal-function-pointers-in-ir:
+
 Internal function pointers
 --------------------------
 

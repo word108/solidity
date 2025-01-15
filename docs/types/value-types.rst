@@ -851,6 +851,49 @@ External (or public) functions have the following members:
   respectively. See :ref:`External Function Calls <external-function-calls>` for
   more information.
 
+.. _function-type-value-stability-across-contract-updates:
+
+Value stability across contract updates
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+An important aspect to consider when using values of function types is whether the value will
+remain valid if the underlying code changes.
+
+The state of the blockchain is not completely immutable and there are multiple ways to place
+different code under the same address:
+
+- Directly deploying different code using :ref:`salted contract creation<salted-contract-creations>`.
+- Delegating to a different contract via :ref:`DELEGATECALL<delegatecall>`
+  (upgradeable code behind a proxy contract is a common example of this).
+- Account abstraction as defined by `EIP-7702 <https://eips.ethereum.org/EIPS/eip-7702>`_.
+
+External function types can be considered as stable as contract's ABI, which makes them very portable.
+Their ABI representation always consists of a contract address and a function selector and it is
+perfectly safe to store them long-term or pass them between contracts.
+While it is possible for the referenced function to change or disappear, a direct external call
+would be affected the same way, so there is no additional risk in such use.
+
+In case of internal functions, however, the value is an identifier that is strongly tied to
+contract's bytecode.
+The actual representation of the identifier is an implementation detail and may change between
+compiler versions or even :ref:`between different backends<internal-function-pointers-in-ir>`.
+Values assigned under a given representation are deterministic (i.e. guaranteed to remain the same
+as long as the source code is the same) but are easily affected by changes such as adding, removing
+or reordering of functions.
+The compiler is also free to remove internal functions that are never used, which may affect other identifiers.
+Some representations, e.g. one where identifiers are simply jump targets, may be affected by
+virtually any change, even one completely unrelated to internal functions.
+
+To counter this, the language limits the use of internal function types outside of the context in
+which they are valid.
+This is why internal function types cannot be used as parameters of external functions (or in any
+other way that is exposed in contract's ABI).
+However, there are still situations where it is up to the user to decide whether their use is safe or not.
+For example long-term storage of such values in state variables is discouraged, but may be safe if
+the contract code is never going to be updated.
+It is also always possible to side-step any safeguards by using inline assembly.
+Such use always needs careful consideration.
+
 Examples
 ^^^^^^^^
 
