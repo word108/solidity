@@ -894,6 +894,13 @@ the contract code is never going to be updated.
 It is also always possible to side-step any safeguards by using inline assembly.
 Such use always needs careful consideration.
 
+.. note::
+    The removal of unused internal functions only takes into account explicit references to
+    such functions by name.
+    Implicit references, such as assigning a new value to a function type variable in inline assembly
+    may still lead to the removal of the function if it is not also referenced explicitly elsewhere
+    in the source.
+
 Examples
 ^^^^^^^^
 
