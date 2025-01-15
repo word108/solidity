@@ -728,7 +728,7 @@ that has the same data representation as the input, whereas ``toUFixed256x18`` r
 Function Types
 --------------
 
-Function types are the types of functions. Variables of function type
+Function types are the types of functions. Variables of a function type
 can be assigned from functions and function parameters of function type
 can be used to pass functions to and return functions from function calls.
 Function types come in two flavours - *internal* and *external* functions:
@@ -742,6 +742,20 @@ contract internally.
 
 External functions consist of an address and a function signature and they can
 be passed via and returned from external function calls.
+
+Note that public functions of the current contract can be used both as an
+internal and as an external function. To use ``f`` as an internal function,
+just use ``f``, if you want to use its external form, use ``this.f``.
+
+If a function type variable is not initialised, calling it results
+in a :ref:`Panic error<assert-and-require>`. The same happens if you call a function after using ``delete``
+on it.
+
+.. note::
+    Lambda or inline functions are planned but not yet supported.
+
+Declaration syntax
+^^^^^^^^^^^^^^^^^^
 
 Function types are notated as follows:
 
@@ -759,7 +773,8 @@ omitted. Note that this only applies to function types. Visibility has
 to be specified explicitly for functions defined in contracts, they
 do not have a default.
 
-Conversions:
+Conversions
+^^^^^^^^^^^
 
 A function type ``A`` is implicitly convertible to a function type ``B`` if and only if
 their parameter types are identical, their return types are identical,
@@ -788,17 +803,9 @@ Which makes it possible to assign a ``payable`` function pointer to a ``non-paya
 function pointer ensuring both types behave the same way, i.e, both cannot be used
 to send ether.
 
-If a function type variable is not initialised, calling it results
-in a :ref:`Panic error<assert-and-require>`. The same happens if you call a function after using ``delete``
-on it.
-
 If external function types are used outside of the context of Solidity,
 they are treated as the ``function`` type, which encodes the address
 followed by the function identifier together in a single ``bytes24`` type.
-
-Note that public functions of the current contract can be used both as an
-internal and as an external function. To use ``f`` as an internal function,
-just use ``f``, if you want to use its external form, use ``this.f``.
 
 A function of an internal type can be assigned to a variable of an internal function type regardless
 of where it is defined.
@@ -828,7 +835,8 @@ Libraries are excluded because they require a ``delegatecall`` and use :ref:`a d
 convention for their selectors <library-selectors>`.
 Functions declared in interfaces do not have definitions so pointing at them does not make sense either.
 
-Members:
+Members
+^^^^^^^
 
 External (or public) functions have the following members:
 
@@ -842,6 +850,9 @@ External (or public) functions have the following members:
   to specify the amount of gas or the amount of wei sent to a function,
   respectively. See :ref:`External Function Calls <external-function-calls>` for
   more information.
+
+Examples
+^^^^^^^^
 
 Example that shows how to use the members:
 
@@ -966,6 +977,3 @@ Another example that uses external function types:
             exchangeRate = response;
         }
     }
-
-.. note::
-    Lambda or inline functions are planned but not yet supported.
