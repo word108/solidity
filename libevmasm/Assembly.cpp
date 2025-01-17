@@ -1667,14 +1667,14 @@ LinkerObject const& Assembly::assembleEOF() const
 
 	for (auto i: referencedSubIds)
 	{
-		size_t const subAssemblyPostionInParentObject = ret.bytecode.size();
+		size_t const subAssemblyPositionInParentObject = ret.bytecode.size();
 		auto const& subAssemblyLinkerObject = m_subs[i]->assemble();
 		// Append subassembly bytecode to the parent assembly result bytecode
 		ret.bytecode += subAssemblyLinkerObject.bytecode;
 		// Add subassembly link references to parent linker object.
 		// Offset accordingly to subassembly position in parent object bytecode
 		for (auto const& [subAssemblyLinkRefPosition, linkRef]: subAssemblyLinkerObject.linkReferences)
-			ret.linkReferences[subAssemblyPostionInParentObject + subAssemblyLinkRefPosition] = linkRef;
+			ret.linkReferences[subAssemblyPositionInParentObject + subAssemblyLinkRefPosition] = linkRef;
 	}
 
 	// TODO: Fill functionDebugData for EOF. It probably should be handled for new code section in the loop above.
