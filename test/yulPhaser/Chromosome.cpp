@@ -75,7 +75,7 @@ BOOST_AUTO_TEST_CASE(makeRandom_should_use_every_possible_step_with_the_same_pro
 	constexpr int samplesPerStep = 500;
 	constexpr double relativeTolerance = 0.02;
 
-	std::map<std::string, size_t> stepIndices = enumerateOptmisationSteps();
+	std::map<std::string, size_t> stepIndices = enumerateOptimisationSteps();
 	auto chromosome = Chromosome::makeRandom(stepIndices.size() * samplesPerStep);
 
 	std::vector<size_t> samples;
@@ -151,7 +151,7 @@ BOOST_AUTO_TEST_CASE(randomOptimisationStep_should_return_each_step_with_same_pr
 	constexpr int samplesPerStep = 500;
 	constexpr double relativeTolerance = 0.02;
 
-	std::map<std::string, size_t> stepIndices = enumerateOptmisationSteps();
+	std::map<std::string, size_t> stepIndices = enumerateOptimisationSteps();
 	std::vector<size_t> samples;
 	for (size_t i = 0; i <= stepIndices.size() * samplesPerStep; ++i)
 		samples.push_back(stepIndices.at(Chromosome::randomOptimisationStep()));
