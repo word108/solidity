@@ -851,7 +851,7 @@ void SMTEncoder::visitCryptoFunction(FunctionCall const& _funCall)
 {
 	auto const& funType = dynamic_cast<FunctionType const&>(*_funCall.expression().annotation().type);
 	auto kind = funType.kind();
-	auto arg0 = expr(*_funCall.arguments().at(0));
+	auto arg0 = expr(*_funCall.arguments().at(0), TypeProvider::bytesStorage());
 	std::optional<smtutil::Expression> result;
 	if (kind == FunctionType::Kind::KECCAK256)
 		result = smtutil::Expression::select(state().cryptoFunction("keccak256"), arg0);
@@ -862,10 +862,10 @@ void SMTEncoder::visitCryptoFunction(FunctionCall const& _funCall)
 	else if (kind == FunctionType::Kind::ECRecover)
 	{
 		auto e = state().cryptoFunction("ecrecover");
-		auto arg0 = expr(*_funCall.arguments().at(0));
-		auto arg1 = expr(*_funCall.arguments().at(1));
-		auto arg2 = expr(*_funCall.arguments().at(2));
-		auto arg3 = expr(*_funCall.arguments().at(3));
+		auto arg0 = expr(*_funCall.arguments().at(0), TypeProvider::fixedBytes(32));
+		auto arg1 = expr(*_funCall.arguments().at(1), TypeProvider::uint(8));
+		auto arg2 = expr(*_funCall.arguments().at(2), TypeProvider::fixedBytes(32));
+		auto arg3 = expr(*_funCall.arguments().at(3), TypeProvider::fixedBytes(32));
 		auto inputSort = dynamic_cast<smtutil::ArraySort&>(*e.sort).domain;
 		auto ecrecoverInput = smtutil::Expression::tuple_constructor(
 			smtutil::Expression(std::make_shared<smtutil::SortSort>(inputSort), ""),
