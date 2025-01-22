@@ -1073,10 +1073,10 @@ jobs:
     # to avoid glibc incompatibilities.
     # See: https://github.com/ethereum/solidity/issues/13954
     # On large runs 2x faster than on medium. 3x on xlarge.
-    <<: *base_ubuntu2004_xlarge
+    <<: *base_ubuntu2404_xlarge
     environment:
-      <<: *base_ubuntu2004_xlarge_env
-      CMAKE_OPTIONS: -DCMAKE_BUILD_TYPE=Release -DSOLC_STATIC_STDLIBS=ON
+      <<: *base_ubuntu2404_xlarge_env
+      CMAKE_OPTIONS: -DCMAKE_BUILD_TYPE=Release -DSOLC_LINK_STATIC=ON
     steps:
       - checkout
       - run_build
