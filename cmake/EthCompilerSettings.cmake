@@ -89,9 +89,9 @@ if (("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU") OR ("${CMAKE_CXX_COMPILER_ID}" MA
 
 	# Additional GCC-specific compiler settings.
 	if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU")
-		# Check that we've got GCC 8.0 or newer.
-		if (NOT (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 8.0))
-			message(FATAL_ERROR "${PROJECT_NAME} requires g++ 8.0 or greater.")
+		# Check that we've got GCC 11.0 or newer.
+		if (NOT (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 11.0))
+			message(FATAL_ERROR "${PROJECT_NAME} requires g++ 11.0 or greater.")
 		endif ()
 
 		# Use fancy colors in the compiler diagnostics
@@ -99,9 +99,9 @@ if (("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU") OR ("${CMAKE_CXX_COMPILER_ID}" MA
 
 	# Additional Clang-specific compiler settings.
 	elseif ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
-		# Check that we've got clang 7.0 or newer.
-		if (NOT (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 7.0))
-			message(FATAL_ERROR "${PROJECT_NAME} requires clang++ 7.0 or greater.")
+		# Check that we've got clang 14.0 or newer.
+		if (NOT (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 14.0))
+			message(FATAL_ERROR "${PROJECT_NAME} requires clang++ 14.0 or greater.")
 		endif ()
 
 		if ("${CMAKE_SYSTEM_NAME}" MATCHES "Darwin")
