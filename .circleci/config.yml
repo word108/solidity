@@ -1093,21 +1093,6 @@ jobs:
             - solc/solc-static-linux
       - matrix_notify_failure_unless_pr
 
-  # Builds in C++20 mode and uses debug build in order to speed up.
-  # Do *NOT* store any artifacts or workspace as we don't run tests on this build.
-  b_ubu_cxx20:
-    <<: *base_ubuntu2404_large
-    environment:
-      <<: *base_ubuntu2404_large_env
-      CMAKE_BUILD_TYPE: Debug
-      # gold is more memory-efficient than the default, allows us to stay with the "large" resource class without OOM errors
-      CMAKE_OPTIONS: -DCMAKE_CXX_STANDARD=20 -DCMAKE_CXX_FLAGS=-fuse-ld=gold
-      MAKEFLAGS: -j 6
-    steps:
-      - checkout
-      - run_build
-      - matrix_notify_failure_unless_pr
-
   b_ubu_2204:
     <<: *base_ubuntu2204_large
     steps:
@@ -1873,7 +1858,6 @@ workflows:
 
       # build-only
       - b_docs: *requires_nothing
-      - b_ubu_cxx20: *requires_nothing
       - b_ubu_ossfuzz: *requires_nothing
       - b_ubu_2204: *requires_nothing
       - b_ubu_2204_clang: *requires_nothing
