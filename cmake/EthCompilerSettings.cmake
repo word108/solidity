@@ -94,6 +94,12 @@ if (("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU") OR ("${CMAKE_CXX_COMPILER_ID}" MA
 			message(FATAL_ERROR "${PROJECT_NAME} requires g++ 11.0 or greater.")
 		endif ()
 
+		# GCC 12 emits warnings for string concatenations with operator+ under O3
+		# See https://gcc.gnu.org/bugzilla/show_bug.cgi?id=105651
+		if (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 12.0 AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 13.0)
+			add_compile_options(-Wno-error=restrict)
+		endif ()
+
 		# Use fancy colors in the compiler diagnostics
 		add_compile_options(-fdiagnostics-color)
 
@@ -104,6 +110,8 @@ if (("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU") OR ("${CMAKE_CXX_COMPILER_ID}" MA
 			message(FATAL_ERROR "${PROJECT_NAME} requires clang++ 14.0 or greater.")
 		endif ()
 
+		# use std::invoke_result, superseding std::result_of which has been removed in c++20
+		add_compile_definitions(BOOST_ASIO_HAS_STD_INVOKE_RESULT)
 		if ("${CMAKE_SYSTEM_NAME}" MATCHES "Darwin")
 			# Set stack size to 32MB - by default Apple's clang defines a stack size of 8MB.
 			# Normally 16MB is enough to run all tests, but it will exceed the stack, if -DSANITIZE=address is used.

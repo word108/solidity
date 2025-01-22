@@ -118,7 +118,6 @@ std::ostream& CommandLineInterface::serr(bool _markAsUsed)
 static std::string const g_stdinFileName = "<stdin>";
 static std::string const g_strAbi = "abi";
 static std::string const g_strAsm = "asm";
-static std::string const g_strAst = "ast";
 static std::string const g_strBinary = "bin";
 static std::string const g_strBinaryRuntime = "bin-runtime";
 static std::string const g_strContracts = "contracts";

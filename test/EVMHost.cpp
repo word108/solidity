@@ -20,7 +20,19 @@
  * for testing purposes.
  */
 
+// Weird issue when compiling with O3 on gcc 12 and later due to usage of vector<uint8_t> (aka bytes) as std::map key
+// https://gcc.gnu.org/bugzilla/show_bug.cgi?id=98465
+// also clang doesn't know stringop-overread
+#if defined(__GNUC__) && !defined(__clang__) // GCC-specific pragma
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wstringop-overread"
+#endif
+
 #include <test/EVMHost.h>
+
+#if defined(__GNUC__) && !defined(__clang__) // GCC-specific pragma
+#pragma GCC diagnostic pop
+#endif
 
 #include <test/evmc/loader.h>
 

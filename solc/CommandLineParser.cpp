@@ -91,7 +91,6 @@ static std::string const g_strOutputDir = "output-dir";
 static std::string const g_strOverwrite = "overwrite";
 static std::string const g_strRevertStrings = "revert-strings";
 static std::string const g_strStopAfter = "stop-after";
-static std::string const g_strParsing = "parsing";
 
 /// Possible arguments to for --revert-strings
 static std::set<std::string> const g_revertStringsArgs
@@ -102,8 +101,6 @@ static std::set<std::string> const g_revertStringsArgs
 	revertStringsToString(RevertStrings::VerboseDebug)
 };
 
-static std::string const g_strSources = "sources";
-static std::string const g_strSourceList = "sourceList";
 static std::string const g_strStandardJSON = "standard-json";
 static std::string const g_strStrictAssembly = "strict-assembly";
 static std::string const g_strSwarm = "swarm";
