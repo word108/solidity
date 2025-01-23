@@ -783,7 +783,7 @@ bool AsmAnalyzer::validateInstructions(evmasm::Instruction _instr, SourceLocatio
 			4328_error,
 			_location,
 			fmt::format(
-				"The \"{}\" instruction is only available on EOF.",
+				"The \"{}\" instruction is only available in EOF.",
 				fmt::arg("instruction", boost::to_lower_copy(instructionInfo(_instr, m_evmVersion).name))
 			)
 		);
