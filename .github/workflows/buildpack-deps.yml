@@ -6,7 +6,6 @@ on:
     paths:
       - 'scripts/docker/buildpack-deps/Dockerfile.emscripten'
       - 'scripts/docker/buildpack-deps/Dockerfile.ubuntu.clang.ossfuzz'
-      - 'scripts/docker/buildpack-deps/Dockerfile.ubuntu2004'
       - 'scripts/docker/buildpack-deps/Dockerfile.ubuntu2204'
       - 'scripts/docker/buildpack-deps/Dockerfile.ubuntu2404'
       - 'scripts/docker/buildpack-deps/Dockerfile.ubuntu2404.clang'
