@@ -381,50 +381,51 @@ std::vector<std::optional<BuiltinFunctionForEVM>> createBuiltins(langutil::EVMVe
 	}
 	else // EOF context
 	{
-		builtins.emplace_back(createFunction(
-			"auxdataloadn",
-			1,
-			1,
-			EVMDialect::sideEffectsOfInstruction(evmasm::Instruction::DATALOADN),
-			ControlFlowSideEffects::fromInstruction(evmasm::Instruction::DATALOADN),
-			{LiteralKind::Number},
-			[](
-				FunctionCall const& _call,
-				AbstractAssembly& _assembly,
-				BuiltinContext&
-			) {
-				yulAssert(_call.arguments.size() == 1);
-				Literal const* literal = std::get_if<Literal>(&_call.arguments.front());
-				yulAssert(literal, "");
-				yulAssert(literal->value.value() <= std::numeric_limits<uint16_t>::max());
-				_assembly.appendAuxDataLoadN(static_cast<uint16_t>(literal->value.value()));
-			}
-		));
-
-		builtins.emplace_back(createFunction(
-			"eofcreate",
-			5,
-			1,
-			EVMDialect::sideEffectsOfInstruction(evmasm::Instruction::EOFCREATE),
-			ControlFlowSideEffects::fromInstruction(evmasm::Instruction::EOFCREATE),
-			{LiteralKind::String, std::nullopt, std::nullopt, std::nullopt, std::nullopt},
-			[](
-				FunctionCall const& _call,
-				AbstractAssembly& _assembly,
-				BuiltinContext& context
-			) {
-				yulAssert(_call.arguments.size() == 5);
-				Literal const* literal = std::get_if<Literal>(&_call.arguments.front());
-				auto const formattedLiteral = formatLiteral(*literal);
-				yulAssert(!util::contains(formattedLiteral, '.'));
-				auto const* containerID = valueOrNullptr(context.subIDs, formattedLiteral);
-				yulAssert(containerID != nullptr);
-				yulAssert(*containerID <= std::numeric_limits<AbstractAssembly::ContainerID>::max());
-				_assembly.appendEOFCreate(static_cast<AbstractAssembly::ContainerID>(*containerID));
-			}
+		if (_objectAccess)
+		{
+			builtins.emplace_back(createFunction(
+				"auxdataloadn",
+				1,
+				1,
+				EVMDialect::sideEffectsOfInstruction(evmasm::Instruction::DATALOADN),
+				ControlFlowSideEffects::fromInstruction(evmasm::Instruction::DATALOADN),
+				{LiteralKind::Number},
+				[](
+					FunctionCall const& _call,
+					AbstractAssembly& _assembly,
+					BuiltinContext&
+				) {
+					yulAssert(_call.arguments.size() == 1);
+					Literal const* literal = std::get_if<Literal>(&_call.arguments.front());
+					yulAssert(literal, "");
+					yulAssert(literal->value.value() <= std::numeric_limits<uint16_t>::max());
+					_assembly.appendAuxDataLoadN(static_cast<uint16_t>(literal->value.value()));
+				}
 			));
 
-		if (_objectAccess)
+			builtins.emplace_back(createFunction(
+				"eofcreate",
+				5,
+				1,
+				EVMDialect::sideEffectsOfInstruction(evmasm::Instruction::EOFCREATE),
+				ControlFlowSideEffects::fromInstruction(evmasm::Instruction::EOFCREATE),
+				{LiteralKind::String, std::nullopt, std::nullopt, std::nullopt, std::nullopt},
+				[](
+					FunctionCall const& _call,
+					AbstractAssembly& _assembly,
+					BuiltinContext& context
+				) {
+					yulAssert(_call.arguments.size() == 5);
+					Literal const* literal = std::get_if<Literal>(&_call.arguments.front());
+					auto const formattedLiteral = formatLiteral(*literal);
+					yulAssert(!util::contains(formattedLiteral, '.'));
+					auto const* containerID = valueOrNullptr(context.subIDs, formattedLiteral);
+					yulAssert(containerID != nullptr);
+					yulAssert(*containerID <= std::numeric_limits<AbstractAssembly::ContainerID>::max());
+					_assembly.appendEOFCreate(static_cast<AbstractAssembly::ContainerID>(*containerID));
+				}
+				));
+
 			builtins.emplace_back(createFunction(
 				"returncontract",
 				3,
@@ -448,6 +449,7 @@ std::vector<std::optional<BuiltinFunctionForEVM>> createBuiltins(langutil::EVMVe
 					_assembly.appendReturnContract(static_cast<AbstractAssembly::ContainerID>(*containerID));
 				}
 			));
+		}
 	}
 	yulAssert(
 		ranges::all_of(builtins, [](std::optional<BuiltinFunctionForEVM> const& _builtinFunction){
