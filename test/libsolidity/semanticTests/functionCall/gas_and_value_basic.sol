@@ -13,8 +13,6 @@ contract helper {
         return flag;
     }
 }
-
-
 contract test {
     helper h;
 
