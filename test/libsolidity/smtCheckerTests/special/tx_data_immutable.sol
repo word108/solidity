@@ -1,6 +1,8 @@
 contract C {
-	bytes32 bhash;
+	bytes32 blob_hash;
+	bytes32 block_hash;
 	uint bfee;
+	uint blobfee;
 	address coin;
 	uint dif;
 	uint prevrandao;
@@ -15,8 +17,10 @@ contract C {
 	address origin;
 
 	function f() public payable {
-		bhash = blockhash(12);
+		blob_hash = blobhash(1);
+		block_hash = blockhash(12);
 		bfee = block.basefee;
+		blobfee = block.blobbasefee;
 		coin = block.coinbase;
 		dif = block.difficulty;
 		prevrandao = block.prevrandao;
@@ -32,8 +36,10 @@ contract C {
 
 		fi();
 
-		assert(bhash == blockhash(12));
+		assert(blob_hash == blobhash(1));
+		assert(block_hash == blockhash(12));
 		assert(bfee == block.basefee);
+		assert(blobfee == block.blobbasefee);
 		assert(coin == block.coinbase);
 		assert(dif == block.difficulty);
 		assert(prevrandao == block.prevrandao);
@@ -49,8 +55,10 @@ contract C {
 	}
 
 	function fi() internal view {
-		assert(bhash == blockhash(12));
+		assert(blob_hash == blobhash(1));
+		assert(block_hash == blockhash(12));
 		assert(bfee == block.basefee);
+		assert(blobfee == block.blobbasefee);
 		assert(coin == block.coinbase);
 		assert(dif == block.difficulty);
 		assert(prevrandao == block.prevrandao);
@@ -68,7 +76,7 @@ contract C {
 // ====
 // SMTEngine: all
 // ----
-// Warning 8417: (329-345): Since the VM version paris, "difficulty" was replaced by "prevrandao", which now returns a random number based on the beacon chain.
-// Warning 8417: (714-730): Since the VM version paris, "difficulty" was replaced by "prevrandao", which now returns a random number based on the beacon chain.
-// Warning 8417: (1229-1245): Since the VM version paris, "difficulty" was replaced by "prevrandao", which now returns a random number based on the beacon chain.
-// Info 1391: CHC: 28 verification condition(s) proved safe! Enable the model checker option "show proved safe" to see all of them.
+// Warning 8417: (432-448): Since the VM version paris, "difficulty" was replaced by "prevrandao", which now returns a random number based on the beacon chain.
+// Warning 8417: (898-914): Since the VM version paris, "difficulty" was replaced by "prevrandao", which now returns a random number based on the beacon chain.
+// Warning 8417: (1494-1510): Since the VM version paris, "difficulty" was replaced by "prevrandao", which now returns a random number based on the beacon chain.
+// Info 1391: CHC: 32 verification condition(s) proved safe! Enable the model checker option "show proved safe" to see all of them.

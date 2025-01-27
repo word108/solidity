@@ -65,8 +65,10 @@ private:
  *   - array of address => bool representing whether an address is used by a contract
  *   - storage of contracts
  * - block and transaction properties, represented as a tuple of:
+ *   - blobhash
  *   - blockhash
  *   - block basefee
+ *   - block blobbasefee
  *   - block chainid
  *   - block coinbase
  *   - block gaslimit
@@ -148,6 +150,7 @@ public:
 	smtutil::Expression txFunctionConstraints(FunctionDefinition const& _function) const;
 	smtutil::Expression txTypeConstraints() const;
 	smtutil::Expression txNonPayableConstraint() const;
+	smtutil::Expression blobhash(smtutil::Expression _blobIndex) const;
 	smtutil::Expression blockhash(smtutil::Expression _blockNumber) const;
 	smtutil::Expression evmParisConstraints() const;
 	//@}
