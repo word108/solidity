@@ -489,22 +489,7 @@ std::map<std::string, std::string> Predicate::expressionSubstitution(smtutil::Ex
 
 std::map<std::string, std::optional<std::string>> Predicate::readTxVars(smtutil::Expression const& _tx) const
 {
-	std::map<std::string, Type const*> const txVars{
-		{"block.basefee", TypeProvider::uint256()},
-		{"block.chainid", TypeProvider::uint256()},
-		{"block.coinbase", TypeProvider::address()},
-		{"block.prevrandao", TypeProvider::uint256()},
-		{"block.gaslimit", TypeProvider::uint256()},
-		{"block.number", TypeProvider::uint256()},
-		{"block.timestamp", TypeProvider::uint256()},
-		{"blockhash", TypeProvider::array(DataLocation::Memory, TypeProvider::uint256())},
-		{"msg.data", TypeProvider::array(DataLocation::CallData)},
-		{"msg.sender", TypeProvider::address()},
-		{"msg.sig", TypeProvider::fixedBytes(4)},
-		{"msg.value", TypeProvider::uint256()},
-		{"tx.gasprice", TypeProvider::uint256()},
-		{"tx.origin", TypeProvider::address()}
-	};
+	std::map<std::string, Type const*> const txVars = transactionMemberTypes();
 	std::map<std::string, std::optional<std::string>> vars;
 	for (auto&& [i, v]: txVars | ranges::views::enumerate)
 		vars.emplace(v.first, expressionToString(_tx.arguments.at(i), v.second));
