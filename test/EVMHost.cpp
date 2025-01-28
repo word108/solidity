@@ -507,7 +507,7 @@ evmc::Result EVMHost::precompileECRecover(evmc_message const& _message) noexcept
 			}
 		}
 	};
-	evmc::Result result = precompileGeneric(_message, inputOutput);
+	evmc::Result result = precompileGeneric(_message, inputOutput, true /* _ignoresTrailingInput */);
 	// ECRecover will return success with empty response in case of failure
 	if (result.status_code != EVMC_SUCCESS && result.status_code != EVMC_OUT_OF_GAS)
 		return resultWithGas(_message.gas, gas_cost, {});
@@ -884,7 +884,7 @@ evmc::Result EVMHost::precompileALTBN128G1Add(evmc_message const& _message) noex
 			}
 		}
 	};
-	return precompileGeneric(_message, inputOutput);
+	return precompileGeneric(_message, inputOutput, true /* _ignoresTrailingInput */);
 }
 
 template <evmc_revision Revision>
@@ -1051,7 +1051,7 @@ evmc::Result EVMHost::precompileALTBN128G1Mul(evmc_message const& _message) noex
 			}
 		}
 	};
-	return precompileGeneric(_message, inputOutput);
+	return precompileGeneric(_message, inputOutput, true /* _ignoresTrailingInput */);
 }
 
 template <evmc_revision Revision>
@@ -1220,6 +1220,7 @@ evmc::Result EVMHost::precompileALTBN128PairingProduct(evmc_message const& _mess
 			}
 		}
 	};
+
 	return precompileGeneric(_message, inputOutput);
 }
 
@@ -1231,10 +1232,23 @@ evmc::Result EVMHost::precompileBlake2f(evmc_message const&) noexcept
 
 evmc::Result EVMHost::precompileGeneric(
 	evmc_message const& _message,
-	std::map<bytes, EVMPrecompileOutput> const& _inOut
+	std::map<bytes, EVMPrecompileOutput> const& _inOut,
+	bool _ignoresTrailingInput
 ) noexcept
 {
-	bytes input(_message.input_data, _message.input_data + _message.input_size);
+	size_t meaningfulInputSize = _message.input_size;
+	if (_ignoresTrailingInput && !_inOut.empty())
+	{
+		// _ignoresTrailingInput only implemented for the case where all inputs have same size.
+		// Simpler to implement and it's all we need for now.
+		for (auto const& [input, output]: _inOut)
+			solAssert(input.size() == _inOut.begin()->first.size());
+
+		// If there is more input that expected, precompiles tend to simply ignore it.
+		meaningfulInputSize = std::min(_message.input_size, _inOut.begin()->first.size());
+	}
+
+	bytes input(_message.input_data, _message.input_data + meaningfulInputSize);
 	if (_inOut.count(input))
 	{
 		auto const& ret = _inOut.at(input);
