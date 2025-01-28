@@ -690,21 +690,22 @@ void AsmAnalyzer::expectValidIdentifier(YulName _identifier, SourceLocation cons
 bool AsmAnalyzer::validateInstructions(std::string_view _instructionIdentifier, langutil::SourceLocation const& _location)
 {
 	// NOTE: This function uses the default EVM version instead of the currently selected one.
-	auto const& defaultEVMDialect = EVMDialect::strictAssemblyForEVM(EVMVersion{}, std::nullopt);
+	auto const& defaultEVMDialect = EVMDialect::strictAssemblyForEVMObjects(EVMVersion{}, std::nullopt);
 	auto const builtinHandle = defaultEVMDialect.findBuiltin(_instructionIdentifier);
 	if (builtinHandle && defaultEVMDialect.builtin(*builtinHandle).instruction.has_value())
 		return validateInstructions(*defaultEVMDialect.builtin(*builtinHandle).instruction, _location);
 
 	solAssert(!m_eofVersion.has_value() || (*m_eofVersion == 1 && m_evmVersion == langutil::EVMVersion::prague()));
 	// TODO: Change `prague()` to `EVMVersion{}` once EOF gets deployed
-	auto const& eofDialect = EVMDialect::strictAssemblyForEVM(EVMVersion::prague(), 1);
+	auto const& eofDialect = EVMDialect::strictAssemblyForEVMObjects(EVMVersion::prague(), 1);
 	auto const eofBuiltinHandle = eofDialect.findBuiltin(_instructionIdentifier);
 	if (eofBuiltinHandle)
 	{
 		auto const builtin = eofDialect.builtin(*eofBuiltinHandle);
 		if (builtin.instruction.has_value())
 			return validateInstructions(*builtin.instruction, _location);
-		else if (!m_eofVersion.has_value())
+		// If builtin is available in EOF but not available in legacy (and we build to legacy) generate custom error.
+		else if (!m_eofVersion.has_value() && !builtinHandle)
 		{
 			m_errorReporter.declarationError(
 				7223_error,
