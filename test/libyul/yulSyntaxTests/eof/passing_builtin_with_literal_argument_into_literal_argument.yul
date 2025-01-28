@@ -1,8 +1,8 @@
 {
-    setimmutable(0, loadimmutable("abc"), "abc")
+    auxdataloadn(auxdataloadn(0))
 }
 // ====
+// bytecodeFormat: >=EOFv1
 // dialect: evm
-// bytecodeFormat: legacy
 // ----
 // TypeError 9114: (6-18): Function expects direct literals as arguments.
