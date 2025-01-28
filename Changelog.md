@@ -19,6 +19,10 @@ Bugfixes:
  * Yul: Fix internal compiler error when a code generation error should be reported instead.
 
 
+Build system:
+ * Linux release builds are fully static again and no longer depend on ``glibc``.
+ * Switch from C++17 to C++20 as the target standard.
+
 ### 0.8.28 (2024-10-09)
 
 Language Features:

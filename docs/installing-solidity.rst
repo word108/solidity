@@ -372,8 +372,8 @@ Minimum Compiler Versions
 
 The following C++ compilers and their minimum versions can build the Solidity codebase:
 
-- `GCC <https://gcc.gnu.org>`_, version 8+
-- `Clang <https://clang.llvm.org/>`_, version 7+
+- `GCC <https://gcc.gnu.org>`_, version 11+
+- `Clang <https://clang.llvm.org/>`_, version 14+
 - `MSVC <https://visualstudio.microsoft.com/vs/>`_, version 2019+
 
 Prerequisites - macOS
