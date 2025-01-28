@@ -505,6 +505,30 @@ evmc::Result EVMHost::precompileECRecover(evmc_message const& _message) noexcept
 				fromHex("0000000000000000000000008743523d96a1b2cbe0c6909653a56da18ed484af"),
 				gas_cost
 			}
+		},
+		{
+			fromHex(
+				"ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+				"0000000000000000000000000000000000000000000000000000000000000001"
+				"0000000000000000000000000000000000000000000000000000000000000002"
+				"0000000000000000000000000000000000000000000000000000000000000003"
+			),
+			{
+				fromHex(""),
+				gas_cost
+			}
+		},
+		{
+			fromHex(
+				"77e5189111eb6557e8a637b27ef8fbb15bc61d61c2f00cc48878f3a296e5e0ca"
+				"0000000000000000000000000000000000000000000000000000000000000000"
+				"6944c77849b18048f6abe0db8084b0d0d0689cdddb53d2671c36967b58691ad4"
+				"ef4f06ba4f78319baafd0424365777241af4dfd3da840471b4b4b087b7750d0d"
+			),
+			{
+				fromHex(""),
+				gas_cost
+			}
 		}
 	};
 	evmc::Result result = precompileGeneric(_message, inputOutput, true /* _ignoresTrailingInput */);
@@ -1255,7 +1279,12 @@ evmc::Result EVMHost::precompileGeneric(
 		return resultWithGas(_message.gas, ret.gas_used, ret.output);
 	}
 	else
-		return resultWithFailure();
+		// FIXME: We're in a noexcept function; this will result in terminate() and then abort().
+		// Still better than nothing - can't be mistaken for revert and Boost will report test name.
+		solThrow(
+			Exception,
+			"Test output for a precompile not defined for input: " + toHex(input, HexPrefix::Add)
+		);
 }
 
 evmc::Result EVMHost::resultWithFailure() noexcept
