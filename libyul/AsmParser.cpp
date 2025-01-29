@@ -785,7 +785,7 @@ void Parser::checkBreakContinuePosition(std::string const& _which)
 	}
 }
 
-bool Parser::isValidNumberLiteral(std::string const& _literal)
+bool Parser::isValidNumberLiteral(std::string_view const _literal)
 {
 	try
 	{
@@ -799,7 +799,7 @@ bool Parser::isValidNumberLiteral(std::string const& _literal)
 	if (boost::starts_with(_literal, "0x"))
 		return true;
 	else
-		return _literal.find_first_not_of("0123456789") == std::string::npos;
+		return _literal.find_first_not_of("0123456789") == std::string_view::npos;
 }
 
 void Parser::raiseUnsupportedTypesError(SourceLocation const& _location) const
