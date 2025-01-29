@@ -834,6 +834,8 @@ defaults:
       binary_type: native
       image: cimg/rust:1.74.0-node
       resource_class: medium
+      # TODO: Use nightly Foundry builds after https://github.com/PaulRBerg/prb-math/issues/248 is fixed
+      foundry_version: "v0.3.0"
 
   - job_native_test_ext_elementfi: &job_native_test_ext_elementfi
       <<: *requires_b_ubu_static
@@ -1461,6 +1463,9 @@ jobs:
       python2:
         type: boolean
         default: false
+      foundry_version:
+        type:  string
+        default: "nightly"
     docker:
       - image: << parameters.image >>
     resource_class: << parameters.resource_class >>
@@ -1474,7 +1479,8 @@ jobs:
       - checkout
       - attach_workspace:
           at: /tmp/workspace
-      - install_foundry
+      - install_foundry:
+          version: << parameters.foundry_version >>
       - run:
           name: Ensure pnpm is installed if npm is present
           command: |
