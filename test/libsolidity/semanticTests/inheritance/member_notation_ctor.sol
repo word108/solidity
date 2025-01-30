@@ -17,6 +17,8 @@ contract A {
 		return d.getX();
 	}
 }
+// ====
+// EVMVersion: >=constantinople
 // ----
 // g(int256): -1 -> -1
 // gas legacy: 77955

@@ -18,6 +18,8 @@ contract D {
         return (new C{salt: hex"01"}()).transfer(5);
     }
 }
+// ====
+// EVMVersion: >=constantinople
 // ----
 // f() -> 1
 // gas irOptimized: 77051

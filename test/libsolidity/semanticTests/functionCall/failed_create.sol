@@ -14,7 +14,7 @@ contract C {
 	}
 }
 // ====
-// EVMVersion: >=byzantium
+// EVMVersion: >=constantinople
 // ----
 // constructor(), 20 wei
 // gas irOptimized: 59688
