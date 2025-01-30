@@ -1397,11 +1397,12 @@ jobs:
       - matrix_notify_failure_unless_pr
 
   t_ems_ext_edr:
-    <<: *base_node_small
+    # Runs out of memory on the small instance
+    <<: *base_ubuntu2404
     docker:
       - image: cimg/rust:1.79.0-node
     environment:
-      <<: *base_node_small_env
+      <<: *base_ubuntu2404_env
       EDR_TESTS_SOLC_PATH: /tmp/workspace/soljson.js
     steps:
       - checkout
