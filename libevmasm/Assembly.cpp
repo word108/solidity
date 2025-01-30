@@ -1660,7 +1660,14 @@ LinkerObject const& Assembly::assembleEOF() const
 
 		ptrdiff_t const relativeJumpOffset = static_cast<ptrdiff_t>(tagPos) - (static_cast<ptrdiff_t>(refPos) + 2);
 		// This cannot happen in practice because we'll run into section size limit first.
-		solAssert(-0x8000 <= relativeJumpOffset && relativeJumpOffset <= 0x7FFF, "Relative jump too far");
+		if (!(-0x8000 <= relativeJumpOffset && relativeJumpOffset <= 0x7FFF))
+			// TODO: Include source location. Note that origin locations we have in debug data are
+			// not usable for error reporting when compiling pure Yul because they point at the optimized source.
+			throw Error(
+				2703_error,
+				Error::Type::CodeGenerationError,
+				"Relative jump too far"
+			);
 		solAssert(relativeJumpOffset < -2 || 0 <= relativeJumpOffset, "Relative jump offset into immediate argument.");
 		setBigEndianUint16(ret.bytecode, refPos, static_cast<size_t>(static_cast<uint16_t>(relativeJumpOffset)));
 	}
