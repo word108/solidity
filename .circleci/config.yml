@@ -1040,6 +1040,8 @@ jobs:
       # See: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=105562#c27
       CMAKE_OPTIONS: -DSANITIZE=address -DPEDANTIC=OFF
       CMAKE_BUILD_TYPE: Release
+      # Set the number of jobs to two instead of the default three, so that we do not run out of memory
+      MAKEFLAGS: -j 2
     steps:
       - build
 

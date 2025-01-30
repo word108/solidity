@@ -25,6 +25,8 @@ contract C {
 		return (a, (new A{salt: hex"01"}()).f(), (new B{salt: hex"01"}()).f());
 	}
 }
+// ====
+// EVMVersion: >=constantinople
 // ----
 // f() -> 3, 7, 5
 // gas irOptimized: 86892

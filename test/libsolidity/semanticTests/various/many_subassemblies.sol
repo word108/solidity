@@ -28,6 +28,8 @@ contract D {
         new C10{salt: hex"0a"}();
     }
 }
+// ====
+// EVMVersion: >=constantinople
 // ----
 // run() ->
 // gas irOptimized: 375192
