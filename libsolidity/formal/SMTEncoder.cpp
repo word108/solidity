@@ -679,6 +679,9 @@ void SMTEncoder::endVisit(FunctionCall const& _funCall)
 	case FunctionType::Kind::BlockHash:
 		defineExpr(_funCall, state().blockhash(expr(*_funCall.arguments().at(0))));
 		break;
+	case FunctionType::Kind::BlobHash:
+		visitBlobHash(_funCall);
+		break;
 	case FunctionType::Kind::AddMod:
 	case FunctionType::Kind::MulMod:
 		visitAddMulMod(_funCall);
@@ -891,6 +894,18 @@ void SMTEncoder::visitGasLeft(FunctionCall const& _funCall)
 	m_context.setUnknownValue(*symbolicVar);
 	if (index > 0)
 		m_context.addAssertion(symbolicVar->currentValue() <= symbolicVar->valueAtIndex(index - 1));
+}
+
+void SMTEncoder::visitBlobHash(FunctionCall const& _funCall)
+{
+	constexpr unsigned BLOB_TRANSACTION_LIMIT = 9; // Since pectra
+	auto indexExpr = expr(*_funCall.arguments().at(0));
+	auto valueExpr = smtutil::Expression::ite(
+		indexExpr >= BLOB_TRANSACTION_LIMIT,
+		smtutil::Expression(u256(0)),
+		state().blobhash(indexExpr)
+	);
+	defineExpr(_funCall, std::move(valueExpr));
 }
 
 void SMTEncoder::visitAddMulMod(FunctionCall const& _funCall)

@@ -667,4 +667,41 @@ smtutil::Expression assignMember(smtutil::Expression const _tuple, std::map<std:
 	return smtutil::Expression::tuple_constructor(sortExpr, args);
 }
 
+std::map<std::string, frontend::Type const*> transactionMemberTypes()
+{
+	// TODO: gasleft
+	return {
+		{"block.basefee", TypeProvider::uint256()},
+		{"block.blobbasefee", TypeProvider::uint256()},
+		{"block.chainid", TypeProvider::uint256()},
+		{"block.coinbase", TypeProvider::address()},
+		{"block.prevrandao", TypeProvider::uint256()},
+		{"block.gaslimit", TypeProvider::uint256()},
+		{"block.number", TypeProvider::uint256()},
+		{"block.timestamp", TypeProvider::uint256()},
+		{"blobhash", TypeProvider::array(DataLocation::Memory, TypeProvider::uint256())},
+		{"blockhash", TypeProvider::array(DataLocation::Memory, TypeProvider::uint256())},
+		{"msg.data", TypeProvider::bytesCalldata()},
+		{"msg.sender", TypeProvider::address()},
+		{"msg.sig", TypeProvider::fixedBytes(4)},
+		{"msg.value", TypeProvider::uint256()},
+		{"tx.gasprice", TypeProvider::uint256()},
+		{"tx.origin", TypeProvider::address()}
+	};
+}
+
+std::map<std::string, SortPointer> transactionMemberSorts()
+{
+	// NOTE: `blockhash` and `blobhash` need proper `ArraySort`, `smtSort()` wraps array types into array+length pair
+	auto toSort = [&](auto const& entry) -> SortPointer
+	{
+		if (entry.first == "blockhash" || entry.first == "blobhash")
+			return std::make_shared<ArraySort>(SortProvider::uintSort, SortProvider::uintSort);
+		return smtSort(*entry.second);
+	};
+	auto types = transactionMemberTypes();
+	return types
+	| ranges::views::transform([&](auto const& entry) { return std::make_pair(entry.first, toSort(entry)); })
+	| ranges::to<std::map<std::string, SortPointer>>();
+}
 }
