@@ -37,7 +37,7 @@ library Pairing {
 
 	/// @return r the sum of two points of G1
 	function add(G1Point memory p1, G1Point memory p2) internal returns (G1Point memory r) {
-		uint[6] memory input;
+		uint[4] memory input;
 		input[0] = p1.X;
 		input[1] = p1.Y;
 		input[2] = p2.X;
@@ -50,7 +50,7 @@ library Pairing {
 	/// @return r the product of a point on G1 and a scalar, i.e.
 	/// p == p.mul(1) and p.add(p) == p.mul(2) for all points p.
 	function mul(G1Point memory p, uint s) internal returns (G1Point memory r) {
-		uint[4] memory input;
+		uint[3] memory input;
 		input[0] = p.X;
 		input[1] = p.Y;
 		input[2] = s;
@@ -292,11 +292,11 @@ contract Test {
 // f() -> true
 // g() -> true
 // pair() -> true
-// gas irOptimized: 275319
-// gas legacy: 293854
-// gas legacyOptimized: 276409
+// gas irOptimized: 275229
+// gas legacy: 293579
+// gas legacyOptimized: 276313
 // verifyTx() -> true
 // ~ emit Verified(string): 0x20, 0x16, "Successfully verified."
-// gas irOptimized: 821446
-// gas legacy: 914211
-// gas legacyOptimized: 820319
+// gas irOptimized: 818076
+// gas legacy: 904397
+// gas legacyOptimized: 816770
