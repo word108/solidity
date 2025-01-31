@@ -7,12 +7,9 @@ contract C {
     D d = D(address(0x1212));
 
     function f() public returns (uint256) {
+        // This call throws on legacy bytecode because of calling nonexisting contract. Legacy checks that there is
+        // a non-empty code under under an address. EOF doesn't do it because non-observability assumption
         d.g();
-        return 7;
-    }
-
-    function g() public returns (uint256) {
-        d.g{gas: 200}();
         return 7;
     }
 
@@ -22,8 +19,7 @@ contract C {
     }
 }
 // ====
-// bytecodeFormat: legacy
+// bytecodeFormat: >=EOFv1
 // ----
-// f() -> FAILURE
-// g() -> FAILURE
+// f() -> 7
 // h() -> 7
