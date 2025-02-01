@@ -13,17 +13,18 @@
     g(2)
 }
 // ====
-// EVMVersion: >=shanghai
-// bytecodeFormat: legacy
+// bytecodeFormat: >=EOFv1
 // outputs: Assembly
 // ----
 // Assembly:
 //     /* "source":53:54   */
 //   0x02
-//     /* "source":108:140   */
-// tag_1:
-//     /* "source":136:137   */
-//   0x00
-//     /* "source":134:138   */
-//   tag_1
-//   jump	// in
+//     /* "source":51:55   */
+//   jumpf{code_section_1}
+//
+// code_section_1: assembly {
+//         /* "source":136:137   */
+//       0x00
+//         /* "source":134:138   */
+//       jumpf{code_section_1}
+// }
