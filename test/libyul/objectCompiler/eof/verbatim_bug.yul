@@ -24,7 +24,7 @@ object "a" {
 }
 // ====
 // EVMVersion: >=shanghai
-// bytecodeFormat: legacy
+// bytecodeFormat: >=EOFv1
 // optimizationPreset: full
 // outputs: Assembly
 // ----
@@ -32,35 +32,45 @@ object "a" {
 //     /* "source":65:66   */
 //   0x00
 //     /* "source":59:67   */
-//   dup1
 //   sload
+//     /* "source":94:95   */
+//   0x00
+//     /* "source":108:406   */
+//   swap1
 //     /* "source":133:225   */
 //   dup1
-//   iszero
-//   tag_1
-//   jumpi
+//     /* "source":138:142   */
+//   0x00
+//     /* "source":133:225   */
+//   eq
+//   rjumpi{tag_1}
+//     /* "source":108:406   */
+// tag_2:
 //     /* "source":238:263   */
 //   dup1
 //     /* "source":243:247   */
 //   0x01
 //     /* "source":238:263   */
 //   eq
-//   tag_3
-//   jumpi
+//   rjumpi{tag_3}
+//     /* "source":108:406   */
+// tag_4:
 //     /* "source":276:368   */
 //   dup1
 //     /* "source":281:285   */
 //   0x02
 //     /* "source":276:368   */
 //   eq
-//   tag_5
-//   jumpi
+//   rjumpi{tag_5}
+//     /* "source":108:406   */
+// tag_6:
 //     /* "source":386:390   */
 //   0x03
 //     /* "source":381:406   */
 //   eq
-//   tag_7
-//   jumpi
+//   rjumpi{tag_7}
+//     /* "source":108:406   */
+// tag_8:
 //     /* "source":426:427   */
 //   0x00
 //     /* "source":419:436   */
@@ -73,12 +83,8 @@ object "a" {
 //   pop
 //     /* "source":403:404   */
 //   0x03
-//     /* "source":426:427   */
-//   0x00
-//     /* "source":419:436   */
-//   sstore
-//     /* "source":108:406   */
-//   stop
+//     /* "source":391:406   */
+//   rjump{tag_8}
 //     /* "source":286:368   */
 // tag_5:
 //     /* "source":314:354   */
@@ -88,12 +94,8 @@ object "a" {
 //   0xaabbccddeeff
 //     /* "source":314:354   */
 //   verbatimbytecode_506002
-//     /* "source":426:427   */
-//   0x00
-//     /* "source":419:436   */
-//   sstore
-//     /* "source":108:406   */
-//   stop
+//     /* "source":286:368   */
+//   rjump{tag_8}
 //     /* "source":248:263   */
 // tag_3:
 //     /* "source":250:261   */
@@ -101,12 +103,8 @@ object "a" {
 //   pop
 //     /* "source":260:261   */
 //   0x01
-//     /* "source":426:427   */
-//   0x00
-//     /* "source":419:436   */
-//   sstore
-//     /* "source":108:406   */
-//   stop
+//     /* "source":248:263   */
+//   rjump{tag_8}
 //     /* "source":143:225   */
 // tag_1:
 //     /* "source":171:211   */
@@ -116,9 +114,5 @@ object "a" {
 //   0xaabbccddeeff
 //     /* "source":171:211   */
 //   verbatimbytecode_506000
-//     /* "source":426:427   */
-//   0x00
-//     /* "source":419:436   */
-//   sstore
-//     /* "source":108:406   */
-//   stop
+//     /* "source":143:225   */
+//   rjump{tag_8}
