@@ -51,10 +51,12 @@ SMTEncoder::SMTEncoder(
 	ModelCheckerSettings _settings,
 	UniqueErrorReporter& _errorReporter,
 	UniqueErrorReporter& _unsupportedErrorReporter,
+	ErrorReporter& _provedSafeReporter,
 	langutil::CharStreamProvider const& _charStreamProvider
 ):
 	m_errorReporter(_errorReporter),
 	m_unsupportedErrors(_unsupportedErrorReporter),
+	m_provedSafeReporter(_provedSafeReporter),
 	m_context(_context),
 	m_settings(std::move(_settings)),
 	m_charStreamProvider(_charStreamProvider)
@@ -311,7 +313,7 @@ bool SMTEncoder::visit(InlineAssembly const& _inlineAsm)
 	{
 		AssignedExternalsCollector(InlineAssembly const& _inlineAsm): externalReferences(_inlineAsm.annotation().externalReferences)
 		{
-			this->operator()(_inlineAsm.operations());
+			this->operator()(_inlineAsm.operations().root());
 		}
 
 		std::map<yul::Identifier const*, InlineAssemblyAnnotation::ExternalIdentifierInfo> const& externalReferences;
@@ -328,7 +330,7 @@ bool SMTEncoder::visit(InlineAssembly const& _inlineAsm)
 		}
 	};
 
-	yul::SideEffectsCollector sideEffectsCollector(_inlineAsm.dialect(), _inlineAsm.operations());
+	yul::SideEffectsCollector sideEffectsCollector(_inlineAsm.dialect(), _inlineAsm.operations().root());
 	if (sideEffectsCollector.invalidatesMemory())
 		resetMemoryVariables();
 	if (sideEffectsCollector.invalidatesStorage())
@@ -426,9 +428,11 @@ void SMTEncoder::endVisit(TupleExpression const& _tuple)
 	{
 		// Add constraints for the length and values as it is known.
 		auto symbArray = std::dynamic_pointer_cast<smt::SymbolicArrayVariable>(m_context.expression(_tuple));
-		solAssert(symbArray, "");
-
-		addArrayLiteralAssertions(*symbArray, applyMap(_tuple.components(), [&](auto const& c) { return expr(*c); }));
+		smtAssert(symbArray, "Inline array must be represented with SymbolicArrayVariable");
+		auto originalType = symbArray->originalType();
+		auto arrayType = dynamic_cast<ArrayType const*>(originalType);
+		smtAssert(arrayType, "Type of inline array must be ArrayType");
+		addArrayLiteralAssertions(*symbArray, applyMap(_tuple.components(), [&](auto const& c) { return expr(*c, arrayType->baseType()); }));
 	}
 	else
 	{
@@ -675,6 +679,9 @@ void SMTEncoder::endVisit(FunctionCall const& _funCall)
 	case FunctionType::Kind::BlockHash:
 		defineExpr(_funCall, state().blockhash(expr(*_funCall.arguments().at(0))));
 		break;
+	case FunctionType::Kind::BlobHash:
+		visitBlobHash(_funCall);
+		break;
 	case FunctionType::Kind::AddMod:
 	case FunctionType::Kind::MulMod:
 		visitAddMulMod(_funCall);
@@ -847,7 +854,7 @@ void SMTEncoder::visitCryptoFunction(FunctionCall const& _funCall)
 {
 	auto const& funType = dynamic_cast<FunctionType const&>(*_funCall.expression().annotation().type);
 	auto kind = funType.kind();
-	auto arg0 = expr(*_funCall.arguments().at(0));
+	auto arg0 = expr(*_funCall.arguments().at(0), TypeProvider::bytesStorage());
 	std::optional<smtutil::Expression> result;
 	if (kind == FunctionType::Kind::KECCAK256)
 		result = smtutil::Expression::select(state().cryptoFunction("keccak256"), arg0);
@@ -858,10 +865,10 @@ void SMTEncoder::visitCryptoFunction(FunctionCall const& _funCall)
 	else if (kind == FunctionType::Kind::ECRecover)
 	{
 		auto e = state().cryptoFunction("ecrecover");
-		auto arg0 = expr(*_funCall.arguments().at(0));
-		auto arg1 = expr(*_funCall.arguments().at(1));
-		auto arg2 = expr(*_funCall.arguments().at(2));
-		auto arg3 = expr(*_funCall.arguments().at(3));
+		auto arg0 = expr(*_funCall.arguments().at(0), TypeProvider::fixedBytes(32));
+		auto arg1 = expr(*_funCall.arguments().at(1), TypeProvider::uint(8));
+		auto arg2 = expr(*_funCall.arguments().at(2), TypeProvider::fixedBytes(32));
+		auto arg3 = expr(*_funCall.arguments().at(3), TypeProvider::fixedBytes(32));
 		auto inputSort = dynamic_cast<smtutil::ArraySort&>(*e.sort).domain;
 		auto ecrecoverInput = smtutil::Expression::tuple_constructor(
 			smtutil::Expression(std::make_shared<smtutil::SortSort>(inputSort), ""),
@@ -887,6 +894,18 @@ void SMTEncoder::visitGasLeft(FunctionCall const& _funCall)
 	m_context.setUnknownValue(*symbolicVar);
 	if (index > 0)
 		m_context.addAssertion(symbolicVar->currentValue() <= symbolicVar->valueAtIndex(index - 1));
+}
+
+void SMTEncoder::visitBlobHash(FunctionCall const& _funCall)
+{
+	constexpr unsigned BLOB_TRANSACTION_LIMIT = 9; // Since pectra
+	auto indexExpr = expr(*_funCall.arguments().at(0));
+	auto valueExpr = smtutil::Expression::ite(
+		indexExpr >= BLOB_TRANSACTION_LIMIT,
+		smtutil::Expression(u256(0)),
+		state().blobhash(indexExpr)
+	);
+	defineExpr(_funCall, std::move(valueExpr));
 }
 
 void SMTEncoder::visitAddMulMod(FunctionCall const& _funCall)
@@ -1296,8 +1315,27 @@ void SMTEncoder::addArrayLiteralAssertions(
 )
 {
 	m_context.addAssertion(_symArray.length() == _elementValues.size());
+
+	// Assert to the solver that _elementValues are exactly the elements at the beginning of the array.
+	// Since we create new symbolic representation for every array literal in the source file, we want to ensure that
+	// representations of two equal literals are also equal. For this reason we always start from constant-zero array.
+	// This ensures SMT-LIB arrays (which are infinite) are also equal beyond the length of the Solidity array literal.
+	auto type = _symArray.type();
+	smtAssert(type);
+	auto valueType = [&]() {
+		if (auto const* arrayType = dynamic_cast<ArrayType const*>(type))
+			return arrayType->baseType();
+		if (smt::isStringLiteral(*type))
+			return TypeProvider::stringMemory()->baseType();
+		smtAssert(false);
+	}();
+	auto tupleSort = std::dynamic_pointer_cast<smtutil::TupleSort>(smt::smtSort(*type));
+	auto sortSort = std::make_shared<smtutil::SortSort>(tupleSort->components.front());
+	smtutil::Expression arrayExpr = smtutil::Expression::const_array(smtutil::Expression(sortSort), smt::zeroValue(valueType));
+	smtAssert(arrayExpr.sort->kind == smtutil::Kind::Array);
 	for (size_t i = 0; i < _elementValues.size(); i++)
-		m_context.addAssertion(smtutil::Expression::select(_symArray.elements(), i) == _elementValues[i]);
+		arrayExpr = smtutil::Expression::store(arrayExpr, smtutil::Expression(i), _elementValues[i]);
+	m_context.addAssertion(_symArray.elements() == arrayExpr);
 }
 
 void SMTEncoder::bytesToFixedBytesAssertions(
@@ -3246,6 +3284,14 @@ void SMTEncoder::createFreeConstants(std::set<SourceUnit const*, ASTNode::Compar
 					solAssert(var->isConstant(), "");
 					createVariable(*var);
 				}
+}
+
+void SMTEncoder::createStateVariables(std::set<SourceUnit const*, ASTNode::CompareByID> const& _sources)
+{
+	for (auto const& source: _sources)
+		for (auto const& node: source->nodes())
+			if (auto contract = dynamic_cast<ContractDefinition const*>(node.get()))
+				createStateVariables(*contract);
 }
 
 smt::SymbolicState& SMTEncoder::state()
